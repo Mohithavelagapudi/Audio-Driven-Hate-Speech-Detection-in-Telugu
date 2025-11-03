@@ -1,37 +1,58 @@
 # 🎧 Audio-Driven Hate Speech Detection in Telugu
 
+<p align="center"> <img src="https://img.shields.io/badge/Language-Telugu-blueviolet?style=for-the-badge"/> <img src="https://img.shields.io/badge/Domain-Hate_Speech_Detection-red?style=for-the-badge"/> <img src="https://img.shields.io/badge/Modality-Multimodal_(Audio+Text)-orange?style=for-the-badge"/> <img src="https://img.shields.io/badge/Dataset_Size-2_Hours-green?style=for-the-badge"/> <img src="https://img.shields.io/badge/Accuracy-91%25_(Audio)_%7C_89%25_(Text)-brightgreen?style=for-the-badge"/> <img src="https://img.shields.io/badge/F1_Score-0.89-lightgrey?style=for-the-badge"/> 
+  
 **Low-resource multimodal hate speech detection leveraging acoustic and textual representations for robust moderation in Telugu.**
+
+----
+
+### 🚀 Overview
+
+While hate speech detection has progressed rapidly for English, Telugu — with over 83 million speakers — still lacks annotated resources.
+This project introduces the first multimodal Telugu hate speech dataset and a suite of audio-, text-, and fusion-based models for comprehensive detection.
+
+### 🧠 Core Highlights
+
+- 🗂️ First Telugu hate-speech dataset (2 hours of annotated audio–text pairs).
+
+- 🔊 Multimodal pipeline integrating acoustic and textual cues.
+
+- ⚙️ Evaluated OpenSMILE, Wav2Vec2, LaBSE, and XLM-R baselines.
+
+- 🎯 Achieved 91 % accuracy (audio) and 89 % (text); fusion improved robustness.
+
 ----
 
 ## 🧩 Abstract
 
-Despite rapid advances in hate speech detection for English, Telugu — a low-resource language with ~83M speakers — lacks any publicly available annotated dataset for this task.
-This project bridges that gap by building the first manually annotated multimodal Telugu hate speech dataset comprising 2 hours of YouTube audio–text pairs.
-We systematically evaluate speech-based, text-based, and fusion-based models. Results show that OpenSMILE + SVM achieves 91% accuracy (F1 = 0.89) for audio, while LaBSE yields 89% accuracy (F1 = 0.88) for text.
-Multimodal fusion further enhances performance, demonstrating the complementary power of acoustic and textual cues in identifying hate speech.
+This study fills a critical resource gap in Telugu hate-speech detection.
+A manually annotated 2-hour multimodal dataset was curated from YouTube.
+Acoustic (OpenSMILE + SVM) and textual (LaBSE) models achieved 91 % and 89 % accuracy, respectively.
+Fusion approaches highlight the complementary role of vocal prosody and linguistic cues.
 
 ----
 
 ## 🎯 Problem Statement
 
-1. Low-Resource Language Gap: Telugu lacks high-quality datasets and pretrained models for hate speech detection.
+| Challenge                | Description                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| 🗣️ **Low-Resource Gap** | Telugu lacks labeled corpora and pretrained models for hate-speech detection. |
+| 🔊 **Modality Gap**      | Text-only systems ignore vocal signals (tone, sarcasm, aggression).           |
 
-2. Modality Gap: Text-only models miss vocal cues such as tone, sarcasm, and aggression, which are critical for accurate classification.
+💡 Goal: Develop a multimodal framework combining speech and text for richer, context-aware classification.
 
-This work develops a robust multimodal framework combining both audio and text signals to detect hate speech more effectively.
 ----
 
-📊 The Dataset
+### 📊 Dataset: DravLangGuard
 
-The dataset was created as part of the **DravLangGuard** initiative and is meticulously annotated for hate speech.
+| Attribute                     | Description                            |
+| ----------------------------- | -------------------------------------- |
+| **Source**                    | YouTube (≥ 50 K subscribers)           |
+| **Annotators**                | 3 native Telugu postgraduates          |
+| **Classes**                   | Hate / Non-Hate (4 sub-types for Hate) |
+| **Inter-Annotator Agreement** | 0.79 (Cohen’s κ)                       |
 
-### Data Collection & Annotation
-
-*   **Source**: Audio clips were gathered from YouTube channels with over 50,000 subscribers to ensure realistic, in-the-wild data.
-*   **Annotation**: Three native Telugu speakers with postgraduate degrees performed the annotation. They first classified content into **Hate** and **Non-Hate**. The hate speech was further categorized into four subclasses based on YouTube's hate speech policy.
-*   **Reliability**: The inter-annotator agreement was measured at **~0.79 using Cohen's Kappa**, indicating a high degree of reliability.
-
-### Dataset Statistics
+### Dataset Composition
 
 The dataset is balanced between hate and non-hate content, with a detailed breakdown of hate speech categories.
 
@@ -45,25 +66,43 @@ The dataset is balanced between hate and non-hate content, with a detailed break
 
 ----
 
-### Preprocessing
-- Audio: Resampled to 16 kHz (speech models) / 48 kHz (CLAP), loudness normalization, duration filtering (outlier analysis via ±2σ & percentile banding).
-- Features (Audio): OpenSMILE ComParE 2016 Low-Level Descriptors → statistical aggregation (max, range, kurtosis, skewness, trend coefficients).
-- Features (Text): Tokenization & contextual embeddings (LaBSE / mBERT / XLM-RoBERTa), truncation 128–512 tokens.
-- Augmentation (Audio): Time-shift, time-stretch, Gaussian noise (class balancing).
+### 🧰 Preprocessing Pipeline
+
+🎵 Audio
+
+- Resampled (16 kHz / 48 kHz), loudness-normalized, duration-filtered.
+
+- Extracted OpenSMILE ComParE 2016 LLDs → statistical aggregates.
+
+- Augmentation: time-shift, stretch, Gaussian noise (class balancing).
+
+✍️ Text
+
+- Tokenization & contextual embeddings (LaBSE, mBERT, XLM-R).
+
+- Sequence truncation (128–512 tokens).
+
+- Handles transliterated Telugu effectively via LaBSE multilingual alignment.
 
 ----
 
-## Methodology
-### Unimodal Pipelines
-1. Text: Classical TF-IDF + XGBoost / SVM; Transformer fine-tuning (mBERT, XLM-RoBERTa, LaBSE).
-2. Audio: Wav2Vec2 (XLS-R), Indic Wav2Vec2 (emotion pretraining), Audio Spectrogram Transformer (AST), OpenSMILE + classical classifiers (SVM, RF, XGBoost, MLP), sequence heads (LSTM / 1D-CNN).
+## 🧮 Methodology
+
+### 🔹 Unimodal Pipelines
+
+| Modality     | Methods                                                                                           |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| 🧾 **Text**  | TF-IDF + XGBoost / SVM · Transformer fine-tuning (mBERT, XLM-R, LaBSE)                            |
+| 🔊 **Audio** | OpenSMILE + SVM / RF / XGBoost / MLP · Wav2Vec2 (XLS-R, Indic) · AST · LSTM/1D-CNN sequence heads |
+
 
 <p align="center">
   <img src="HateSpeech_images/image (45).png" alt="" width="1000"/>
 </p>
 
 
-### Multimodal Fusion Strategies
+### 🔸 Multimodal Fusion Strategies
+
 | Strategy | Description | Implemented Models |
 |----------|-------------|--------------------|
 | Early Fusion (Feature-Level) | Concatenate / project audio & text embeddings into shared latent space before joint classification. | OpenSMILE + LaBSE (Attention), Wav2Vec2 + XLM-R, CLAP (joint audio-text encoders) |
@@ -113,6 +152,20 @@ The dataset is balanced between hate and non-hate content, with a detailed break
 - Cross-attention fusion provides richer inter-modality interaction but incurs higher computational overhead; late fusion remains robust when one modality degrades.
 - LaBSE’s multilingual alignment aids transliterated Telugu tokens versus vanilla mBERT, improving binary discrimination.
 - Multimodal gains are modest in balanced settings—suggesting future improvements via temporal alignment (utterance-level segmentation) & noise-robust ASR augmentation.
+
+----
+
+### 🧠 Tech Stack
+
+| Category          | Tools / Models                         |
+| ----------------- | -------------------------------------- |
+| **Audio**         | OpenSMILE · Wav2Vec2 · AST . CLAP          |
+| **Text**          | LaBSE · XLM-R · mBERT . TF-IDF               |
+| **ML / DL**       | SVM · XGBoost · PyTorch · Transformers . RandomForest |
+| **Evaluation**    | Accuracy · Macro F1 · Confusion Matrix |
+| **Visualization** | Matplotlib · Seaborn                   |
+| **Audio Processing**| Librosa . Torchaudio                 |
+
 
 ----
 
