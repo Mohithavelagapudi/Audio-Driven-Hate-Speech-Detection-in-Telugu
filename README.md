@@ -58,6 +58,9 @@ The dataset is balanced between hate and non-hate content, with a detailed break
 1. Text: Classical TF-IDF + XGBoost / SVM; Transformer fine-tuning (mBERT, XLM-RoBERTa, LaBSE).
 2. Audio: Wav2Vec2 (XLS-R), Indic Wav2Vec2 (emotion pretraining), Audio Spectrogram Transformer (AST), OpenSMILE + classical classifiers (SVM, RF, XGBoost, MLP), sequence heads (LSTM / 1D-CNN).
 
+<p align="center">
+  <img src="HateSpeech_images/image (45).png" alt="" width="1000"/>
+</p>
 
 
 ### Multimodal Fusion Strategies
@@ -80,11 +83,27 @@ The dataset is balanced between hate and non-hate content, with a detailed break
 
 ### Text Based Model Performance
 
+<p align="center">
+  <img src="HateSpeech_images/image (47).png" alt="" width="1000"/>
+</p>
+
 ### Speech-Based Model Performance
+
+<p align="center">
+  <img src="HateSpeech_images/image (46).png" alt="" width="1000"/>
+</p>
 
 ### Multimodals (Early-Fusion) Performance
 
+<p align="center">
+  <img src="HateSpeech_images/image (48).png" alt="" width="1000"/>
+</p>
+
 ### Multimodals (Late-Fusion) Performance
+
+<p align="center">
+  <img src="HateSpeech_images/image (49).png" alt="" width="1000"/>
+</p>
 
 ----
 
